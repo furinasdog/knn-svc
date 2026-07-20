@@ -1,6 +1,7 @@
 
 import sys
-sys.path.append("/home/ken/open")
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 """
 Clean CLI for ddsp_inference with two modes:
@@ -49,7 +50,7 @@ def main():
 	args = parser.parse_args()
 
 	# Load model
-	from ddsp_hubconf import knn_vc
+	from ddsp_hubconf import knn_vc  # noqa: E402 (project root added to path)
 	knn = knn_vc(pretrained=True, progress=True, prematched=True, device=args.device, ckpt_type=args.ckpt_type, local_ckpt_dir = args.ckpt_dir)
 
 	# Decide mode by filesystem

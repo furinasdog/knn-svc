@@ -262,7 +262,7 @@ def get_bulk_dsp_choral(f0, amp, sample_rate = 16000, hop_size = 320, dsp_type =
 import sys, os
 from pathlib import Path
 sys.path.append(Path(os.path.abspath(__file__)))
-from ddsp_prematch_dataset import get_bulk_dsp_choral
+from model.dataset import get_bulk_dsp_choral
 
 
 def play_sequence(audio_chunk, f_s = 16000):

@@ -13,8 +13,7 @@ from torch import Tensor
 from hubconf import wavlm_large
 
 
-sys.path.append("/home/ken/open")
-from lib_ongaku_test import fast_cosine_dist
+from utils.audio import fast_cosine_dist
 
 
 DOWNSAMPLE_FACTOR = 320
@@ -35,7 +34,7 @@ def temp_plot(post_opt, target_feature_indices, synth_feats):
 	else:
 		src_wav_file = folder + "ctd_1_b_ans_resampled_16000_to_ctd_1_s_ans_resampled_16000_knn_mix_post_opt_0.3.wav"
 	
-	from lib_ongaku_test import batch_load_audio
+	from utils.audio import batch_load_audio
 	y_1, sr = batch_load_audio(src_wav_file, sr = 16000)
 	y_1 = y_1[0]
 	print(y_1.shape)
@@ -1232,7 +1231,7 @@ def match_at_inference_time(src_wav_file, ref_wav_file, wavlm, match_weights, sy
 		shifted_query_f0 = copy.deepcopy(query_f0)		
 		shifted_query_f0[query_f0 != 0] = torch.exp(torch.log(query_f0[query_f0 != 0]) + matching_f0_median - query_f0_median)
 
-		from lib_ongaku_test import smoothen_f0
+		from utils.audio import smoothen_f0
 		
 		
 		# shifted_query_f0 = torch.tensor(smoothen_f0(shifted_query_f0.cpu().numpy(), [[36.1, 36.16], [51.34, 51.4], [75.14, 75.28], [77.32, 77.52], [157.24,157.34], [193.24, 193.54], [204.1, 204.3], [213.68, 214], [218.9, 219.02], [225.62, 225.78], [226.42, 226.46], [227.16, 227.22], [231.22, 231.32], [231.56, 231.6], [231.8, 231.96]], frame_per_second = 50))
@@ -1264,8 +1263,7 @@ def match_at_inference_time(src_wav_file, ref_wav_file, wavlm, match_weights, sy
 		# print(eval_to_wavlm(target_feature_indices[1727][None]).shape, eval_to_wavlm(target_feature_indices[1728][None]).shape)
 		
 		import sys
-		sys.path.append("/home/ken/open")
-		from lib_ongaku_test import knn_with_concat_cost
+		from utils.audio import knn_with_concat_cost
 		
 		# print(target_feature_indices[1727])
 		# print(target_feature_indices[1728])
@@ -1452,7 +1450,7 @@ def match_at_inference_time(src_wav_file, ref_wav_file, wavlm, match_weights, sy
 	
 	if "wavlm_only" in ckpt_type or "no_harm_no_amp" in ckpt_type:
 		return out_feats_weighted_collection, audio_out_feats_weighted_collection, shifted_query_f0_collection
-	elif "mix" in ckpt_type:
+	elif "mix" in ckpt_type or "opensinger" in ckpt_type:
 		# return torch.cat([out_feats_weighted, spec_out_feats_weighted], dim = 1), audio_out_feats_weighted, shifted_query_f0
 		return out_feats_weighted_collection, harmonics_out_feats_weighted_collection, audio_out_feats_weighted_collection, shifted_query_f0_collection
 	else:

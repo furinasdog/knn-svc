@@ -9,11 +9,11 @@ import json
 from pathlib import Path
 
 
-from wavlm.WavLM import WavLM, WavLMConfig
-# from hifigan.models import Generator as HiFiGAN
-from hifigan.utils import AttrDict, load_checkpoint, scan_checkpoint
-# from matcher import KNeighborsVC
-from ddsp_matcher import KNeighborsVC
+from model.wavlm.WavLM import WavLM, WavLMConfig
+# from model.hifigan.models import Generator as HiFiGAN
+from model.hifigan.utils import AttrDict, load_checkpoint, scan_checkpoint
+# from model.matcher import KNeighborsVC
+from model.matcher import KNeighborsVC
 
 def knn_vc(pretrained=True, progress=True, prematched=True, device='cuda') -> KNeighborsVC:
 	""" Load kNN-VC (WavLM encoder and HiFiGAN decoder). Optionally use vocoder trained on `prematched` data. """

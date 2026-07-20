@@ -1,15 +1,14 @@
 # kNN-SVC: Robust Zero-Shot Singing Voice Conversion with Additive Synthesis and Concatenation Smoothness Optimization
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/SmoothKen/knn-svc/blob/master/knnsvc_demo.ipynb)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 **[Issues](https://github.com/SmoothKen/knn-svc/issues/new/choose) in code/demo welcome // 欢迎提交 [Issues](https://github.com/SmoothKen/knn-svc/issues/new/choose) // コード・デモの不具合は [Issues](https://github.com/SmoothKen/knn-svc/issues/new/choose) 歓迎です // 코드/데모 [Issues](https://github.com/SmoothKen/knn-svc/issues/new/choose) 환영합니다**
 
 
 
-This repo provides inference for kNN-SVC. The project is managed with Poetry for reproducible, isolated runs.
+This repo provides inference for kNN-SVC.
 
-- Prereqs: Python 3.12, Poetry
-- Install deps: `poetry install`
-- Checkpoints can be found under the Releases tab, place them in a folder and specify it as a command line argument (or modify it in the notebook)
+- Prereqs: Python 3.12, Conda
+- Install deps: `pip install -r requirements.txt`
+- Checkpoints can be found under the Releases tab, place them in a folder and specify it as a command line argument
 - Run conversions using any of the three pathways below. Feel free to report bugs/confusion via Issues.
 
 All examples assume 16kHz, mono audio inputs.
@@ -20,7 +19,7 @@ Runs the main entrypoint and saves output next to the source file as:
 <src_basename>_to_<tgt_basename>_knn_<ckpt_type>_<post_opt>.wav
 
 ```bash
-poetry run python ddsp_inference.py /path/to/src.wav /path/to/style.wav \
+python scripts/inference.py /path/to/src.wav /path/to/style.wav \
     --ckpt_dir /path/to/ckpt_dir \
     --ckpt_type mix \
     --post_opt post_opt_0.2 \
@@ -41,7 +40,7 @@ Converted audio will be written under the parent directory of the target dataset
 `<parent_of_tgt>/{src_name}_to_{tgt_name}_{ckpt_type}_post_opt_{post_opt}/`
 
 ```bash
-poetry run python ddsp_inference.py /path/to/src_dataset_root /path/to/tgt_dataset_root \
+python scripts/inference.py /path/to/src_dataset_root /path/to/tgt_dataset_root \
     --ckpt_dir /path/to/ckpt_dir \
     --ckpt_type mix \
     --post_opt post_opt_0.2 \
@@ -51,22 +50,6 @@ poetry run python ddsp_inference.py /path/to/src_dataset_root /path/to/tgt_datas
 Notes:
 - `--required_subset_file` can filter which files are processed (CSV format expected by the code)
 - `--dur_limit` restricts the target pool to the first N minutes (set to a number or leave empty for all)
-
-
-## 3) Notebook demo
-
-Colab demo: [https://colab.research.google.com/github/SmoothKen/knn-svc/blob/master/knnsvc_demo.ipynb](https://colab.research.google.com/github/SmoothKen/knn-svc/blob/master/knnsvc_demo.ipynb)
-
-Open `knnsvc_demo.ipynb` for an interactive, quick demo that uses the same `ddsp_inference.py` entrypoint under the hood.
-
-Steps:
-- Ensure you have 16kHz, mono WAVs for the source (content) and target (style).
-- In the first cell, set `src_wav_path` and `ref_wav_path` and optionally tweak `ckpt_type`, `post_opt`, and `topk`.
-- Run the next cell to perform the conversion. The result will be saved next to the source file as:
-    `<src_basename>_to_<tgt_basename>_knn_<ckpt_type>_<post_opt>.wav`
-- Subsequent cells will load and play the result inside the notebook.
-
-Tip: `ckpt_type` options include `mix`, `mix_harm_no_amp_*`, `mix_no_harm_no_amp_*`, `wavlm_only`, `wavlm_only_original`. `post_opt` can be `no_post_opt` or `post_opt_0.2`.
 
 
 ## Status and planned cleanup

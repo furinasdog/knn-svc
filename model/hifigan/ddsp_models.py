@@ -399,7 +399,7 @@ def play_sequence(audio_chunk, f_s = 16000):
 import sys, os
 from pathlib import Path
 sys.path.append(Path(os.path.abspath(__file__)))
-from ddsp_prematch_dataset import get_bulk_dsp_choral
+from model.dataset import get_bulk_dsp_choral
 
 # from .ddsp_meldataset import get_bulk_dsp_choral
 class SynthesizerTrn(nn.Module):

@@ -50,10 +50,13 @@ feature_type = sys.argv[-1]
 
 
 
-from ddsp_prematch_dataset import match_at_inference_time
+from model.dataset import match_at_inference_time
 src_wav_path = sys.argv[1]
 ref_wav_paths = sys.argv[2:-1]
 
+
+import os, sys
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from ddsp_hubconf import knn_vc
 knn_vc = knn_vc(pretrained=True, progress=True, prematched=True, device='cuda', feature_type = feature_type)

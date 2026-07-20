@@ -6,18 +6,18 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torchaudio
 import torchaudio.transforms as T
-# from hifigan.models import Generator as HiFiGAN
-from hifigan.utils import AttrDict
+# from model.hifigan.models import Generator as HiFiGAN
+from model.hifigan.utils import AttrDict
 from torch import Tensor
-from wavlm.WavLM import WavLM
-from knnvc_utils import generate_matrix_from_index
+from model.wavlm.WavLM import WavLM
+from utils.knnvc_utils import generate_matrix_from_index
 
 
 def play_sequence(audio_chunk, f_s = 16000):
 	import sounddevice as sd
 	sd.play(audio_chunk, f_s, blocking = True)
-	
-from lib_ongaku_test import save_audio
+
+from utils.audio import save_audio
 
 # ys list of y sequences
 def plot_multi_sequences(x, ys, y_names, title = "", template="plotly", width = None, height = None, x_axis = None, y_axis = None, initial_visibility = True):
@@ -953,7 +953,7 @@ class KNeighborsVC(nn.Module):
 		device = torch.device(device) if device is not None else self.device
 
 		
-		from ddsp_prematch_dataset import match_at_inference_time
+		from model.dataset import match_at_inference_time
 		from pathlib import Path
 		if "wavlm_only" not in ckpt_type and "no_harm_no_amp" not in ckpt_type:
 			out_feats_weighted, harmonics_out_feats_weighted, audio_out_feats_weighted, shifted_query_f0 = match_at_inference_time(Path(src_wav_file), Path(ref_wav_file), self.wavlm, match_weights = self.weighting, synth_weights = self.weighting, topk = topk, device = device, prioritize_f0 = prioritize_f0, ckpt_type = ckpt_type, post_opt = post_opt)
@@ -1062,7 +1062,7 @@ class KNeighborsVC(nn.Module):
 		# sys.exit()
 
 		
-		from ddsp_prematch_dataset import match_at_inference_time
+		from model.dataset import match_at_inference_time
 		cache_dir = "/home/ken/copies/test_cached_" + ckpt_type
 		if os.path.isdir(cache_dir):
 			os.system(f"rm -rf {cache_dir}")

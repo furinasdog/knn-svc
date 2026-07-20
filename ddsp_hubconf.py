@@ -9,9 +9,9 @@ import json
 from pathlib import Path
 
 
-from wavlm.WavLM import WavLM, WavLMConfig
-from hifigan.utils import AttrDict, load_checkpoint, scan_checkpoint
-from ddsp_matcher import KNeighborsVC
+from model.wavlm.WavLM import WavLM, WavLMConfig
+from model.hifigan.utils import AttrDict, load_checkpoint, scan_checkpoint
+from model.matcher import KNeighborsVC
 
 
 def knn_vc(pretrained=True, progress=True, prematched=True, ckpt_type = "mix", device='cuda', local_ckpt_dir = "/home/ken/Downloads/knn_vc_data/ckpt_saved") -> KNeighborsVC:
@@ -20,7 +20,7 @@ def knn_vc(pretrained=True, progress=True, prematched=True, ckpt_type = "mix", d
 	# hifigan, hifigan_cfg = hifigan_wavlm(pretrained, progress, prematched, device)
 	
 	hifigan, hifigan_cfg = hifigan_wavlm(pretrained, progress, prematched, ckpt_type, device, local_ckpt_dir)
-	wavlm = wavlm_large(pretrained, progress, device)
+	wavlm = wavlm_large(pretrained, progress, device, local_ckpt_dir)
 	knnvc = KNeighborsVC(wavlm, hifigan, hifigan_cfg, device)
 	return knnvc
 
@@ -35,7 +35,7 @@ def hifigan_wavlm(pretrained=True, progress=True, prematched=True, ckpt_type = "
 	# import sys
 	# sys.exit()
 
-	with open(cp/'hifigan'/'config_v1_wavlm.json') as f:
+	with open(cp/'model'/'hifigan'/'config_v1_wavlm.json') as f:
 		data = f.read()
 	json_config = json.loads(data)
 	h = AttrDict(json_config)
@@ -45,18 +45,18 @@ def hifigan_wavlm(pretrained=True, progress=True, prematched=True, ckpt_type = "
 	if "wavlm_only" in ckpt_type or "no_harm_no_amp" in ckpt_type:
 		
 		if "wavlm_only_original" in ckpt_type:
-			from hifigan.models import Generator as HiFiGAN
+			from model.hifigan.models import Generator as HiFiGAN
 			h.hubert_dim = 1024
 		else:
-			from hifigan.ddsp_models_f0 import SynthesizerTrn as HiFiGAN
+			from model.hifigan.ddsp_models_f0 import SynthesizerTrn as HiFiGAN
 			h.hubert_dim = 1024
 	# elif ckpt_type == "spec_only":
 		# raise NotImplementedError
 		# h.hubert_dim = 200
 	else:
-		
+
 		# _harmonics
-		from hifigan.ddsp_models import SynthesizerTrn as HiFiGAN
+		from model.hifigan.ddsp_models import SynthesizerTrn as HiFiGAN
 		h.hubert_dim = 1024
 		
 		
@@ -104,17 +104,23 @@ def hifigan_wavlm(pretrained=True, progress=True, prematched=True, ckpt_type = "
 	return generator, h
 
 
-def wavlm_large(pretrained=True, progress=True, device='cuda') -> WavLM:
+def wavlm_large(pretrained=True, progress=True, device='cuda', local_ckpt_dir=None) -> WavLM:
 	"""Load the WavLM large checkpoint from the original paper. See https://github.com/microsoft/unilm/tree/master/wavlm for details. """
 	if torch.cuda.is_available() == False:
 		if str(device) != 'cpu':
 			logging.warning(f"Overriding device {device} to cpu since no GPU is available.")
 			device = 'cpu'
-	checkpoint = torch.hub.load_state_dict_from_url(
-		"https://github.com/bshall/knn-vc/releases/download/v0.1/WavLM-Large.pt", 
-		map_location=device, 
-		progress=progress
-	)
+
+	local_wavlm = Path(local_ckpt_dir) / 'WavLM-Large.pt' if local_ckpt_dir else None
+	if local_wavlm and local_wavlm.is_file():
+		checkpoint = torch.load(str(local_wavlm), map_location=device)
+		print(f"[WavLM] Loaded from local: {local_wavlm}")
+	else:
+		checkpoint = torch.hub.load_state_dict_from_url(
+			"https://github.com/bshall/knn-vc/releases/download/v0.1/WavLM-Large.pt",
+			map_location=device,
+			progress=progress
+		)
 	
 	cfg = WavLMConfig(checkpoint['cfg'])
 	device = torch.device(device)
