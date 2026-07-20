@@ -149,17 +149,17 @@ python scripts/inference.py src.wav style.wav \
 
 ### 推荐开源歌声数据集
 
-| 数据集 | 语言 | 歌手数 | 时长 | 说明 |
-|--------|------|--------|------|------|
-| [OpenSinger](https://github.com/Multi-Singer/Multi-Singer.github.io) | 中/英 | 40+ | ~40h | 多歌手，含专业与业余 |
-| [M4Singer](https://github.com/M4Singer/M4Singer) | 中文 | 10 | ~6.5h | 业余歌手，带标注 |
-| [Opencpop](https://wenet.org.cn/opencpop/) | 中文 | 1（女声） | ~100首 | NetEase 发布，高质量 |
-| [PopCS](https://github.com/MoonInTheBowl/PopCS) | 中文 | 1 | ~100首 | 流行歌曲 |
-| [CSD](https://www.kaggle.com/datasets/microsoft/children-song-dataset) | 韩语 | 2（童声） | ~1h | 儿童歌曲 |
-| [Kising](https://drive.google.com/drive/folders/1746K1LkuJBgVdAqzSjHnqB4FZqOg0p0F) | 韩语 | 1 | ~2h | 女声独唱 |
-| LibriSpeech | 英文 | 2000+ | 1000h | 语音（非歌声），原始训练用 |
+| 数据集 | 语言 | 歌手数 | 时长 | 采样率 | 许可证 | 说明 |
+|--------|------|--------|------|--------|--------|------|
+| [OpenSinger](https://github.com/Multi-Singer/Multi-Singer.github.io) | 中/英 | 40+ | ~40h | — | CC BY-NC-SA | 多歌手，含专业与业余，**首选** |
+| [M4Singer](https://github.com/M4Singer/M4Singer) | 中文 | 10 | ~6.5h | 44.1kHz | CC BY-NC-SA | 业余歌手，带乐谱标注，需申请 |
+| [Opencpop](https://wenet-e2e.github.io/opencpop/download) | 中文 | 1（女声） | ~5.2h | 44.1kHz | 开源 | NetEase 发布，录音棚品质 |
+| [PopCS](https://github.com/MoonInTheRiver/DiffSinger) | 中文 | 1 | ~100首 | — | CC BY-NC-SA | 需机构邮箱申请 |
+| [KiSing](https://drive.google.com/drive/folders/1746K1LkuJBgVdAqzSjHnqB4FZqOg0p0F) | 中文 | 1（女声） | ~2h | — | 开源 | 普通话女声独唱 |
+| [CSD](https://zenodo.org/records/4785016) | 韩/英 | 1（女声） | ~1h | 44.1kHz | CC BY-NC-SA | 专业流行歌手演唱儿歌，含 MIDI |
+| LibriSpeech | 英文 | 2000+ | 1000h | 16kHz | — | 语音（非歌声），原始训练用 |
 
-> **提示**：对于中文歌声转换，推荐优先使用 OpenSinger 或 M4Singer 进行微调。数据量越大、音色越接近目标，效果越好。
+> **提示**：对于中文歌声转换，推荐优先使用 **OpenSinger**（数据量最大）或 **M4Singer**（多歌手）进行微调。数据量越大、音色越接近目标，效果越好。注意下载后需重采样至 16kHz 单声道。
 
 ### 关键配置参数
 
